@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "exportedAt": "2025-09-30T10:00:00.000Z",
+  "records": [
+    {
+      "id": "rec_0001",
+      "description": "Lunch at cafeteria",
+      "amount": 12.50,
+      "category": "Food",
+      "date": "2025-09-25",
+      "notes": "Chicken rice combo",
+      "createdAt": "2025-09-25T12:30:00.000Z",
+      "updatedAt": "2025-09-25T12:30:00.000Z"
+    },
+    {
+      "id": "rec_0002",
+      "description": "Chemistry textbook",
+      "amount": 89.99,
+      "category": "Books",
+      "date": "2025-09-23",
+      "notes": "CHEM 201 required reading",
+      "createdAt": "2025-09-23T09:00:00.000Z",
+      "updatedAt": "2025-09-23T09:00:00.000Z"
+    },
+    {
+      "id": "rec_0003",
+      "description": "Monthly bus pass",
+      "amount": 45.00,
+      "category": "Transport",
+      "date": "2025-09-20",
+      "notes": "",
+      "createdAt": "2025-09-20T08:00:00.000Z",
+      "updatedAt": "2025-09-20T08:00:00.000Z"
+    },
+    {
+      "id": "rec_0004",
+      "description": "Coffee with friends",
+      "amount": 8.75,
+      "category": "Entertainment",
+      "date": "2025-09-28",
+      "notes": "Campus café, Saturday morning",
+      "createdAt": "2025-09-28T10:15:00.000Z",
+      "updatedAt": "2025-09-28T10:15:00.000Z"
+    },
+    {
+      "id": "rec_0005",
+      "description": "Registration fees payment",
+      "amount": 350.00,
+      "category": "Fees",
+      "date": "2025-09-01",
+      "notes": "Semester 1 2025-2026 academic year",
+      "createdAt": "2025-09-01T08:00:00.000Z",
+      "updatedAt": "2025-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "rec_0006",
+      "description": "Weekly groceries market run",
+      "amount": 27.30,
+      "category": "Food",
+      "date": "2025-09-22",
+      "notes": "Vegetables, eggs, bread",
+      "createdAt": "2025-09-22T15:00:00.000Z",
+      "updatedAt": "2025-09-22T15:00:00.000Z"
+    },
+    {
+      "id": "rec_0007",
+      "description": "Python programming book",
+      "amount": 34.95,
+      "category": "Books",
+      "date": "2025-09-15",
+      "notes": "O'Reilly — Fluent Python 2nd ed.",
+      "createdAt": "2025-09-15T11:00:00.000Z",
+      "updatedAt": "2025-09-15T11:00:00.000Z"
+    },
+    {
+      "id": "rec_0008",
+      "description": "Uber ride to central library",
+      "amount": 6.50,
+      "category": "Transport",
+      "date": "2025-09-24",
+      "notes": "",
+      "createdAt": "2025-09-24T14:00:00.000Z",
+      "updatedAt": "2025-09-24T14:00:00.000Z"
+    },
+    {
+      "id": "rec_0009",
+      "description": "Movie night ticket",
+      "amount": 15.00,
+      "category": "Entertainment",
+      "date": "2025-09-21",
+      "notes": "Friday film screening on campus",
+      "createdAt": "2025-09-21T19:30:00.000Z",
+      "updatedAt": "2025-09-21T19:30:00.000Z"
+    },
+    {
+      "id": "rec_0010",
+      "description": "Late library fine",
+      "amount": 2.00,
+      "category": "Fees",
+      "date": "2025-09-18",
+      "notes": "3 days overdue on loan",
+      "createdAt": "2025-09-18T16:00:00.000Z",
+      "updatedAt": "2025-09-18T16:00:00.000Z"
+    },
+    {
+      "id": "rec_0011",
+      "description": "Morning tea and snacks",
+      "amount": 3.25,
+      "category": "Food",
+      "date": "2025-09-29",
+      "notes": "Green tea plus biscuits",
+      "createdAt": "2025-09-29T08:30:00.000Z",
+      "updatedAt": "2025-09-29T08:30:00.000Z"
+    },
+    {
+      "id": "rec_0012",
+      "description": "Notebook and pens stationery",
+      "amount": 8.00,
+      "category": "Books",
+      "date": "2025-09-10",
+      "notes": "A4 ruled notebook, 2 ballpoints",
+      "createdAt": "2025-09-10T10:00:00.000Z",
+      "updatedAt": "2025-09-10T10:00:00.000Z"
+    },
+    {
+      "id": "rec_0013",
+      "description": "Gym membership monthly",
+      "amount": 0.01,
+      "category": "Other",
+      "date": "2025-09-02",
+      "notes": "Edge case: tiny amount",
+      "createdAt": "2025-09-02T09:00:00.000Z",
+      "updatedAt": "2025-09-02T09:00:00.000Z"
+    },
+    {
+      "id": "rec_0014",
+      "description": "International conference registration",
+      "amount": 999.99,
+      "category": "Fees",
+      "date": "2025-09-05",
+      "notes": "Edge case: large amount",
+      "createdAt": "2025-09-05T10:00:00.000Z",
+      "updatedAt": "2025-09-05T10:00:00.000Z"
+    }
+  ]
+}
