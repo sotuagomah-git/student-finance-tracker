@@ -3,6 +3,10 @@
 /* Custom Css */
 
 :root {
+
+
+  /* Storing color code pallets and design tokens as variables */
+
   /* --- Core palette --- */
   --color-white:      #ffffff;
   --color-off-white:  #f4f6f9;    /* page background */
@@ -191,6 +195,8 @@ header {
   border-radius: 2px;
   transition: transform var(--t-fast), opacity var(--t-fast);
 }
+
+/* Animation on the bar */
 /* Animate bars into X when open */
 .nav-toggle[aria-expanded="true"] span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
@@ -310,3 +316,77 @@ h3 {
   font-weight: 600;
   margin-bottom: var(--space-sm);
 }
+
+
+
+/* ============================================================
+   SECTION 5 — ABOUT SECTION
+   Targets: <section id="about">
+   Contains: tagline, 4-card grid, milestone progress list
+   ============================================================ */
+
+/* Tagline paragraph under the h1 */
+.about-tagline {
+  font-size: 1.05rem;
+  color: var(--color-dark-grey);
+  margin-bottom: var(--space-xl);
+}
+
+/* 2-column grid of about cards (1 column on mobile) */
+.about-grid {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: 1fr;
+  margin-bottom: var(--space-2xl);
+}
+
+/* Individual about card: <article class="about-card"> */
+.about-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+}
+.about-card:hover {
+  border-color: var(--color-blue-light);
+}
+
+/* Card subheadings */
+.about-card h2 {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--color-blue);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+/* Feature list inside the Key Features card */
+.about-card ul {
+  list-style: none;
+}
+.about-card ul li::before {
+  content: "→ ";
+  color: var(--color-blue);
+  font-family: var(--font-mono);
+}
+
+/* Contact links row */
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-dark-grey);
+  font-size: 0.9rem;
+  transition: color var(--t-fast);
+}
+.contact-link:hover {
+  color: var(--color-blue);
+}
+

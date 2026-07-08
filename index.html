@@ -44,7 +44,7 @@
   <div id="status-assertive" role="alert" aria-live="assertive" aria-atomic="true" class="sr-only"></div>
 
       <!-- ========== MAIN CONTENT ========== -->
-  <main id="main-content">
+<main id="main-content">
 
     <!-- ===== SECTION: ABOUT ===== -->
     <!-- about this project -->
@@ -94,7 +94,7 @@
     </section>
 
 
-<!-- === Building the dashbord section ===== -->
+ <!-- === Building the dashbord section ===== -->
     <!-- ===== SECTION: DASHBOARD ===== -->
     <section id="dashboard" class="page-section active" aria-labelledby="dashboard-heading">
       <div class="section-container">
@@ -159,3 +159,385 @@
         </div>
       </div>
     </section>
+
+    <!-- ===== SECTION: RECORDS TABLE ===== -->
+    <section id="records" class="page-section" aria-labelledby="records-heading" hidden>
+      <div class="section-container">
+        <div class="section-eyebrow">03 / Records</div>
+        <h1 id="records-heading">All Transactions</h1>
+
+        <!-- Search toolbar -->
+        <div class="search-toolbar" role="search" aria-label="Search transactions">
+          <div class="search-field-wrap">
+            <label for="search-input" class="sr-only">Search transactions (regex supported)</label>
+            <input
+              type="text"
+              id="search-input"
+              class="search-input"
+              placeholder="Search or enter regex…"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="search-hint search-status"
+            />
+            <svg class="search-icon" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <label class="toggle-label">
+            <input type="checkbox" id="search-case" />
+            <span class="toggle-text">Case sensitive</span>
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="search-desc-only" />
+            <span class="toggle-text">Description only</span>
+          </label>
+          <div id="search-hint" class="search-hint">Supports regular expressions — e.g. <code>(coffee|tea)</code></div>
+          <div id="search-status" class="search-status" role="status" aria-live="polite"></div>
+        </div>
+
+        <!-- Filter by category -->
+        <div class="filter-bar" role="group" aria-label="Filter by category">
+          <span class="filter-label">Filter:</span>
+          <div id="category-filters" class="category-filters"></div>
+        </div>
+
+        <!-- Sort controls -->
+        <div class="sort-bar" role="group" aria-label="Sort records">
+          <span class="sort-label">Sort by:</span>
+          <button class="sort-btn active" data-sort="date" data-dir="desc" aria-pressed="true">
+            Date <span class="sort-arrow" aria-hidden="true">↓</span>
+          </button>
+          <button class="sort-btn" data-sort="description" data-dir="asc" aria-pressed="false">
+            Description <span class="sort-arrow" aria-hidden="true">↕</span>
+          </button>
+          <button class="sort-btn" data-sort="amount" data-dir="desc" aria-pressed="false">
+            Amount <span class="sort-arrow" aria-hidden="true">↕</span>
+          </button>
+        </div>
+
+        <!-- Records count -->
+        <div id="records-count" class="records-count" aria-live="polite"></div>
+
+        <!-- Table (desktop) / Cards (mobile) -->
+        <div class="table-scroll-wrap" role="region" aria-label="Transactions table" tabindex="0">
+          <table id="records-table" aria-label="All transactions">
+            <thead>
+              <tr>
+                <th scope="col">Description</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Category</th>
+                <th scope="col">Date</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="records-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile card view -->
+        <div id="records-cards" class="records-cards" aria-label="Transactions (card view)"></div>
+
+        <!-- Empty state -->
+        <div id="empty-state" class="empty-state" hidden>
+          <div class="empty-icon" aria-hidden="true">📭</div>
+          <p>No records found.</p>
+          <button class="btn btn-primary" onclick="app.navigate('add-edit')">Add your first record</button>
+        </div>
+
+        <!-- Export toolbar -->
+        <div class="export-bar">
+          <button id="export-btn" class="btn btn-ghost">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export JSON
+          </button>
+          <label class="btn btn-ghost" for="import-file">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Import JSON
+            <input type="file" id="import-file" accept=".json" class="sr-only" />
+          </label>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===== SECTION: ADD/EDIT FORM ===== -->
+    <section id="add-edit" class="page-section" aria-labelledby="form-heading" hidden>
+      <div class="section-container">
+        <div class="section-eyebrow" id="form-eyebrow">04 / Add Record</div>
+        <h1 id="form-heading">New Transaction</h1>
+
+        <form id="transaction-form" novalidate aria-describedby="form-global-error">
+          <div id="form-global-error" class="form-global-error" role="alert" aria-live="assertive" hidden></div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label for="field-description" class="form-label">
+              Description
+              <span class="required" aria-label="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="field-description"
+              name="description"
+              class="form-control"
+              placeholder="e.g. Lunch at cafeteria"
+              maxlength="120"
+              autocomplete="off"
+              aria-required="true"
+              aria-describedby="err-description hint-description"
+            />
+            <div id="hint-description" class="form-hint">No leading/trailing spaces. Max 120 chars.</div>
+            <div id="err-description" class="form-error" role="alert" aria-live="polite" hidden></div>
+          </div>
+
+          <!-- Amount -->
+          <div class="form-group">
+            <label for="field-amount" class="form-label">
+              Amount (USD)
+              <span class="required" aria-label="required">*</span>
+            </label>
+            <div class="input-with-prefix">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input
+                type="text"
+                id="field-amount"
+                name="amount"
+                class="form-control"
+                placeholder="0.00"
+                inputmode="decimal"
+                aria-required="true"
+                aria-describedby="err-amount"
+              />
+            </div>
+            <div id="err-amount" class="form-error" role="alert" aria-live="polite" hidden></div>
+          </div>
+
+          <!-- Category -->
+          <div class="form-group">
+            <label for="field-category" class="form-label">
+              Category
+              <span class="required" aria-label="required">*</span>
+            </label>
+            <select
+              id="field-category"
+              name="category"
+              class="form-control"
+              aria-required="true"
+              aria-describedby="err-category"
+            >
+              <option value="">— Select category —</option>
+              <option value="Food">Food</option>
+              <option value="Books">Books</option>
+              <option value="Transport">Transport</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Fees">Fees</option>
+              <option value="Other">Other</option>
+            </select>
+            <div id="err-category" class="form-error" role="alert" aria-live="polite" hidden></div>
+          </div>
+
+          <!-- Custom category (shown when "Other" or custom) -->
+          <div class="form-group" id="custom-category-group" hidden>
+            <label for="field-custom-category" class="form-label">Custom Category</label>
+            <input
+              type="text"
+              id="field-custom-category"
+              name="custom_category"
+              class="form-control"
+              placeholder="e.g. Medical"
+              aria-describedby="err-custom-category hint-custom-category"
+            />
+            <div id="hint-custom-category" class="form-hint">Letters, spaces, and hyphens only.</div>
+            <div id="err-custom-category" class="form-error" role="alert" aria-live="polite" hidden></div>
+          </div>
+
+          <!-- Date -->
+          <div class="form-group">
+            <label for="field-date" class="form-label">
+              Date
+              <span class="required" aria-label="required">*</span>
+            </label>
+            <input
+              type="date"
+              id="field-date"
+              name="date"
+              class="form-control"
+              aria-required="true"
+              aria-describedby="err-date"
+            />
+            <div id="err-date" class="form-error" role="alert" aria-live="polite" hidden></div>
+          </div>
+
+          <!-- Notes (duplicate-word detection) -->
+          <div class="form-group">
+            <label for="field-notes" class="form-label">Notes (optional)</label>
+            <textarea
+              id="field-notes"
+              name="notes"
+              class="form-control"
+              rows="3"
+              placeholder="Any additional notes…"
+              aria-describedby="err-notes hint-notes"
+            ></textarea>
+            <div id="hint-notes" class="form-hint">Advanced: duplicate consecutive words will be flagged.</div>
+            <div id="err-notes" class="form-error" role="alert" aria-live="polite" hidden></div>
+          </div>
+
+          <!-- Hidden edit ID -->
+          <input type="hidden" id="field-edit-id" name="edit_id" value="" />
+
+          <!-- Form actions -->
+          <div class="form-actions" >
+            <button type="submit" id="form-submit-btn" class="btn btn-primary">
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save Record
+            </button>
+            <button type="button" id="form-cancel-btn" class="btn btn-ghost">Cancel</button>
+            <button type="reset" class="btn btn-ghost btn-sm">Reset</button>
+          </div>
+        </form>
+
+        <!-- Quick regex pattern reference -->
+        <details class="regex-reference">
+          <summary>Regex Search Patterns (reference)</summary>
+          <table class="regex-table">
+            <caption>Example search patterns for Finance Tracker</caption>
+            <thead>
+              <tr><th>Pattern</th><th>Matches</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>\.\d{2}\b</code></td><td>Records with cents (e.g. $12.50)</td></tr>
+              <tr><td><code>(coffee|tea)</code></td><td>Beverage keywords in descriptions</td></tr>
+              <tr><td><code>\b(\w+)\s+\1\b</code></td><td>Duplicate consecutive words</td></tr>
+              <tr><td><code>^[A-Z]</code></td><td>Descriptions starting with uppercase</td></tr>
+              <tr><td><code>\d{4}-\d{2}-\d{2}</code></td><td>ISO date format</td></tr>
+              <tr><td><code>(?&lt;=\$)\d+\.\d{2}</code></td><td>Dollar amounts (lookbehind)</td></tr>
+            </tbody>
+          </table>
+        </details>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: SETTINGS ===== -->
+    <section id="settings" class="page-section" aria-labelledby="settings-heading" hidden>
+      <div class="section-container">
+        <div class="section-eyebrow">05 / Settings</div>
+        <h1 id="settings-heading">Settings</h1>
+
+        <!-- Currency settings -->
+        <fieldset class="settings-card">
+          <legend>Currency &amp; Conversion</legend>
+          <p class="settings-desc">Set manual exchange rates. Base currency is always USD.</p>
+
+          <div class="currency-grid">
+            <div class="form-group">
+              <label for="rate-rwf" class="form-label">1 USD = ? RWF</label>
+              <input type="number" id="rate-rwf" class="form-control" value="1350" min="1" step="0.01"
+                aria-describedby="err-rate-rwf" />
+              <div id="err-rate-rwf" class="form-error" role="alert" hidden></div>
+            </div>
+            <div class="form-group">
+              <label for="rate-ngn" class="form-label">1 USD = ? NGN</label>
+              <input type="number" id="rate-ngn" class="form-control" value="1580" min="1" step="0.01"
+                aria-describedby="err-rate-ngn" />
+              <div id="err-rate-ngn" class="form-error" role="alert" hidden></div>
+            </div>
+          </div>
+
+          <!-- Currency converter -->
+          <div class="converter-box" role="region" aria-label="Currency converter">
+            <h3>Quick Converter</h3>
+            <div class="converter-row">
+              <input type="number" id="conv-amount" class="form-control conv-input" value="1" min="0" step="0.01"
+                aria-label="Amount to convert" />
+              <select id="conv-from" class="form-control conv-select" aria-label="Convert from">
+                <option value="USD">USD</option>
+                <option value="RWF">RWF</option>
+                <option value="NGN">NGN</option>
+              </select>
+              <span class="conv-arrow" aria-hidden="true">→</span>
+              <select id="conv-to" class="form-control conv-select" aria-label="Convert to">
+                <option value="RWF">RWF</option>
+                <option value="USD">USD</option>
+                <option value="NGN">NGN</option>
+              </select>
+              <button id="conv-btn" class="btn btn-primary">Convert</button>
+            </div>
+            <div id="conv-result" class="conv-result" role="status" aria-live="polite"></div>
+          </div>
+
+          <button id="save-rates-btn" class="btn btn-primary mt-2">Save Rates</button>
+        </fieldset>
+
+        <!-- Budget cap setting -->
+        <fieldset class="settings-card">
+          <legend>Budget Cap</legend>
+          <div class="form-group">
+            <label for="settings-cap" class="form-label">Monthly budget cap (USD)</label>
+            <div class="input-with-prefix">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input type="number" id="settings-cap" class="form-control" value="500" min="0" step="0.01" />
+            </div>
+          </div>
+          <button id="save-cap-btn" class="btn btn-primary">Save Cap</button>
+        </fieldset>
+
+        <!-- Categories management -->
+        <fieldset class="settings-card">
+          <legend>Manage Categories</legend>
+          <div id="categories-list" class="categories-list" role="list" aria-label="Current categories"></div>
+          <div class="add-category-row">
+            <label for="new-category-input" class="sr-only">New category name</label>
+            <input type="text" id="new-category-input" class="form-control" placeholder="New category name…"
+              aria-describedby="err-new-cat hint-new-cat" />
+            <div id="hint-new-cat" class="form-hint sr-only">Letters, spaces, and hyphens only.</div>
+            <div id="err-new-cat" class="form-error" role="alert" aria-live="polite" hidden></div>
+            <button id="add-category-btn" class="btn btn-primary">Add</button>
+          </div>
+        </fieldset>
+
+        <!-- Data management -->
+        <fieldset class="settings-card">
+          <legend>Data Management</legend>
+          <div class="data-actions">
+            <button id="clear-data-btn" class="btn btn-danger">
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+              Clear All Data
+            </button>
+            <button id="load-seed-btn" class="btn btn-ghost">
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Load Seed Data
+            </button>
+          </div>
+        </fieldset>
+      </div>
+    </section>
+</main>
+
+ <!-- ========== FOOTER ========== -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <span class="footer-logo">FinTrack<span class="logo-accent">.</span></span>
+      <span class="footer-copy">Student Finance Tracker — Vanilla JS · No frameworks · Offline-first</span>
+      <span class="footer-stack">HTML · CSS · JS · localStorage</span>
+    </div>
+  </footer>
+
+  <div id="confirm-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <div class="modal-box">
+      <h2 id="confirm-title" class="modal-title">Confirm</h2>
+      <p id="confirm-message" class="modal-message"></p>
+      <div class="modal-actions">
+        <button id="confirm-yes" class="btn btn-danger">Yes, delete</button>
+        <button id="confirm-no" class="btn btn-ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="scripts/app.js"></script>
+  <script src="validators.js"></script>
+  <script src="storage.js"></script>
+  <script src="state.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
