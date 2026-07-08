@@ -390,3 +390,1166 @@ h3 {
   color: var(--color-blue);
 }
 
+
+/* ============================================================
+   SECTION 6 — DASHBOARD
+   Targets: <section id="dashboard">
+   Contains: stat cards, budget cap, category bars, trend chart
+   ============================================================ */
+
+/* ---- Stat cards grid ---- */
+/* Targets: <div class="stats-grid"> containing .stat-card elements */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+/* Individual stat card */
+.stat-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+}
+.stat-card:hover {
+  border-color: var(--color-blue-light);
+}
+
+/* Primary card (Total Spent) spans full width on mobile */
+.stat-card.primary {
+  grid-column: 1 / -1;
+  border-left: 4px solid var(--color-blue);
+  background: var(--color-blue-pale);
+}
+
+/* Label above the big number */
+.stat-label {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-mid-grey);
+  margin-bottom: 0.4rem;
+}
+
+/* The big number */
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-black);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-card.primary .stat-value {
+  color: var(--color-blue);
+  font-size: 2rem;
+}
+
+/* Small text below the number */
+.stat-sub {
+  font-size: 0.78rem;
+  color: var(--color-mid-grey);
+  font-family: var(--font-mono);
+}
+
+/* ---- Budget cap meter ---- */
+/* Targets: <div class="cap-section"> */
+.cap-section {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+/* Row: heading on left, Edit Cap button on right */
+.cap-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+/* "$250 spent of $500" text row */
+.cap-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--color-dark-grey);
+  margin-bottom: 0.75rem;
+}
+#cap-spent {
+  color: var(--color-black);
+  font-weight: 700;
+}
+#cap-limit {
+  color: var(--color-blue);
+}
+
+/* The progress bar track */
+.cap-bar-container {
+  position: relative;
+  background: var(--color-light-grey);
+  border-radius: 100px;
+  height: 12px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+/* The filled portion of the bar */
+.cap-bar {
+  height: 100%;
+  background: var(--color-blue);
+  border-radius: 100px;
+  transition: width var(--t-med);
+  max-width: 100%;
+}
+/* Red bar when over budget */
+.cap-bar.overage {
+  background: var(--color-red);
+}
+
+/* The animated dot at the end of the bar */
+.cap-pulse {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-blue);
+  opacity: 0;
+  pointer-events: none;
+  transition: left var(--t-med);
+}
+.cap-pulse.active {
+  opacity: 1;
+}
+.cap-pulse.overage {
+  background: var(--color-red);
+}
+
+/* Status message below the bar */
+.cap-message {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-dark-grey);
+  min-height: 1.2em;
+}
+.cap-message.good    { color: var(--color-green); }
+.cap-message.warning { color: var(--color-yellow); }
+.cap-message.danger  { color: var(--color-red); }
+
+/* ---- Category breakdown bars ---- */
+/* Targets: <div class="category-section"> */
+.category-section {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.category-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Each row: label | bar | amount — 3-column grid */
+.cat-bar-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 70px;
+  gap: var(--space-sm);
+  align-items: center;
+  font-size: 0.82rem;
+}
+.cat-bar-label {
+  color: var(--color-dark-grey);
+  font-size: 0.8rem;
+}
+
+/* The grey track */
+.cat-bar-track {
+  background: var(--color-light-grey);
+  border-radius: 100px;
+  height: 8px;
+  overflow: hidden;
+}
+/* The coloured fill — width set by JS */
+.cat-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width var(--t-med);
+}
+.cat-bar-amount {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-mid-grey);
+  text-align: right;
+}
+
+/* ---- 7-day trend chart ---- */
+/* Targets: <div class="trend-section"> */
+.trend-section {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+}
+
+/* Bar chart container — height fixed, bars align to bottom */
+.trend-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+  height: 100px;
+  padding-bottom: 4px;
+}
+
+/* Wrapper for each bar + its value tooltip */
+.trend-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+/* The actual bar — height% set by JS */
+.trend-bar {
+  width: 100%;
+  background: var(--color-blue);
+  border-radius: 3px 3px 0 0;
+  min-height: 3px;
+  transition: height var(--t-med);
+  position: relative;
+}
+.trend-bar:hover {
+  background: var(--color-blue-light);
+  cursor: default;
+}
+
+/* Value label that appears on hover */
+.trend-bar-val {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--color-dark-grey);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+.trend-bar:hover .trend-bar-val {
+  opacity: 1;
+}
+
+/* Day labels row below the chart */
+.trend-labels {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+.trend-label {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--color-mid-grey);
+}
+
+
+/* ============================================================
+   SECTION 7 — RECORDS TABLE
+   Targets: <section id="records">
+   Contains: search bar, filter chips, sort bar, table, cards, export
+   ============================================================ */
+
+/* ---- Search toolbar ---- */
+/* Targets: <div class="search-toolbar"> */
+.search-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: var(--space-md);
+}
+
+/* Search input wrapper — icon inside */
+.search-field-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.7rem 1rem 0.7rem 2.8rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-md);
+  color: var(--color-black);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  transition: border-color var(--t-fast);
+}
+.search-input:focus {
+  border-color: var(--color-blue);
+  outline: none;
+}
+.search-input.regex-error {
+  border-color: var(--color-red);
+}
+
+/* Magnifying glass icon inside the search input */
+.search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-mid-grey);
+  pointer-events: none;
+}
+
+/* "Case sensitive" and "Description only" toggles */
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--color-dark-grey);
+  cursor: pointer;
+}
+.toggle-label input[type="checkbox"] {
+  accent-color: var(--color-blue);
+  width: 1rem;
+  height: 1rem;
+}
+
+.search-hint {
+  font-size: 0.75rem;
+  color: var(--color-mid-grey);
+}
+.search-hint code {
+  font-family: var(--font-mono);
+  background: var(--color-light-grey);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  color: var(--color-blue);
+}
+
+.search-status {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-mid-grey);
+}
+
+/* ---- Filter chips bar ---- */
+/* Targets: <div class="filter-bar"> > <div id="category-filters"> */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: var(--space-sm);
+}
+
+.filter-label,
+.sort-label {
+  font-size: 0.75rem;
+  color: var(--color-mid-grey);
+  font-family: var(--font-mono);
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* Each category pill */
+.filter-chip {
+  padding: 0.25rem 0.65rem;
+  border-radius: 100px;
+  border: 1px solid var(--color-light-grey);
+  background: transparent;
+  color: var(--color-dark-grey);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+  font-family: var(--font-ui);
+}
+.filter-chip:hover {
+  border-color: var(--color-blue-light);
+  color: var(--color-blue);
+}
+.filter-chip.active {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+  color: var(--color-white);
+}
+
+/* ---- Sort bar ---- */
+/* Targets: <div class="sort-bar"> */
+.sort-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: var(--space-sm);
+}
+
+.sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--color-light-grey);
+  background: var(--color-white);
+  color: var(--color-dark-grey);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.sort-btn:hover {
+  background: var(--color-blue-pale);
+  color: var(--color-blue);
+}
+.sort-btn.active {
+  color: var(--color-blue);
+  border-color: var(--color-blue);
+  background: var(--color-blue-pale);
+}
+.sort-arrow {
+  font-size: 0.9em;
+}
+
+/* Record count line */
+.records-count {
+  font-size: 0.78rem;
+  color: var(--color-mid-grey);
+  font-family: var(--font-mono);
+  margin-bottom: var(--space-sm);
+}
+
+/* ---- Data table (desktop) ---- */
+/* Targets: <div class="table-scroll-wrap"> > <table id="records-table"> */
+.table-scroll-wrap {
+  overflow-x: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--color-light-grey);
+  margin-bottom: var(--space-md);
+  background: var(--color-white);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+thead th {
+  padding: 0.75rem var(--space-md);
+  text-align: left;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-mid-grey);
+  background: var(--color-off-white);
+  border-bottom: 1px solid var(--color-light-grey);
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--color-light-grey);
+}
+tbody tr:last-child {
+  border-bottom: none;
+}
+tbody tr:hover {
+  background: var(--color-blue-pale);
+}
+
+tbody td {
+  padding: 0.7rem var(--space-md);
+  vertical-align: middle;
+}
+
+/* Amount column — blue monospace */
+.td-amount {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-blue);
+}
+
+/* Date column */
+.td-date {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-dark-grey);
+  white-space: nowrap;
+}
+
+/* Actions column */
+.td-actions {
+  display: flex;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+/* ---- Category chips ---- */
+/* Used in table rows and mobile cards */
+.cat-chip {
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: var(--color-light-grey);
+  color: var(--color-dark-grey);
+}
+.cat-food          { color: var(--cat-food);          background: #fff1e6; }
+.cat-books         { color: var(--cat-books);         background: #f3f0ff; }
+.cat-transport     { color: var(--cat-transport);     background: #e0f2fe; }
+.cat-entertainment { color: var(--cat-entertainment); background: #fce7f3; }
+.cat-fees          { color: var(--cat-fees);          background: #fef3c7; }
+.cat-other         { color: var(--cat-other);         background: var(--color-light-grey); }
+
+/* ---- Search match highlight ---- */
+/* Applied to <mark> tags inserted by highlight() in validators.js */
+mark {
+  background: var(--color-blue-pale);
+  color: var(--color-blue);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* ---- Row action buttons ---- */
+/* Targets: <button class="btn-icon"> inside tbody */
+.btn-icon {
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--color-light-grey);
+  background: transparent;
+  color: var(--color-dark-grey);
+  cursor: pointer;
+  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+.btn-icon:hover {
+  background: var(--color-off-white);
+}
+.btn-icon.edit:hover {
+  color: var(--color-blue);
+  border-color: var(--color-blue);
+}
+.btn-icon.delete:hover {
+  color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+/* ---- Mobile cards ---- */
+/* Targets: <div id="records-cards"> — hidden on desktop, shown on mobile */
+.records-cards {
+  display: none;
+}
+
+.rec-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-md);
+  padding: var(--space-md);
+  margin-bottom: 0.5rem;
+}
+
+.rec-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.rec-card-desc {
+  font-size: 0.9rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+.rec-card-amount {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-blue);
+  white-space: nowrap;
+}
+
+.rec-card-meta {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.rec-card-date {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-mid-grey);
+}
+
+.rec-card-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  justify-content: flex-end;
+}
+
+/* ---- Empty state ---- */
+/* Targets: <div id="empty-state"> shown when no records match */
+.empty-state {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-md);
+  color: var(--color-mid-grey);
+}
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ---- Export / Import bar ---- */
+/* Targets: <div class="export-bar"> */
+.export-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: var(--space-md);
+}
+
+
+/* ============================================================
+   SECTION 8 — ADD / EDIT FORM
+   Targets: <section id="add-edit">
+   Contains: form groups, labels, inputs, errors, hints, actions
+   ============================================================ */
+
+/* Each label + input + error block */
+.form-group {
+  margin-bottom: var(--space-lg);
+}
+
+/* Field label */
+.form-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-dark-grey);
+  margin-bottom: 0.4rem;
+}
+/* Red asterisk on required fields */
+.required {
+  color: var(--color-red);
+  margin-left: 0.2rem;
+}
+
+/* All text inputs, selects, textareas */
+.form-control {
+  width: 100%;
+  padding: 0.7rem var(--space-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-md);
+  color: var(--color-black);
+  font-size: 0.9rem;
+  font-family: var(--font-ui);
+  transition: border-color var(--t-fast);
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-control:focus {
+  border-color: var(--color-blue);
+  outline: none;
+}
+/* Red border when validation fails */
+.form-control.invalid {
+  border-color: var(--color-red);
+}
+/* Green border when validation passes */
+.form-control.valid {
+  border-color: var(--color-green);
+}
+
+/* Dropdown arrow for <select> */
+select.form-control {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.2rem;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Amount input with $ prefix */
+.input-with-prefix {
+  position: relative;
+}
+.input-prefix {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-mid-grey);
+  font-family: var(--font-mono);
+  pointer-events: none;
+}
+.input-with-prefix .form-control {
+  padding-left: 1.8rem;
+}
+
+/* Small grey hint text below inputs */
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--color-mid-grey);
+  margin-top: 0.3rem;
+}
+
+/* Red error message below a field */
+.form-error {
+  font-size: 0.78rem;
+  color: var(--color-red);
+  margin-top: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.form-error::before {
+  content: "⚠ ";
+}
+
+/* Red error banner at the top of the form */
+.form-global-error {
+  background: var(--color-red-pale);
+  border: 1px solid var(--color-red-light);
+  border-radius: var(--r-md);
+  padding: 0.75rem var(--space-md);
+  color: var(--color-red);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-md);
+}
+
+/* Row of submit / cancel / reset buttons */
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ---- Regex reference (collapsible) ---- */
+/* Targets: <details class="regex-reference"> */
+.regex-reference {
+  margin-top: var(--space-xl);
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-md);
+  padding: var(--space-md);
+}
+.regex-reference summary {
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  color: var(--color-dark-grey);
+  cursor: pointer;
+  user-select: none;
+  padding: 0.25rem 0;
+}
+.regex-table {
+  margin-top: var(--space-md);
+  width: 100%;
+  font-size: 0.8rem;
+}
+.regex-table caption {
+  font-size: 0.7rem;
+  color: var(--color-mid-grey);
+  text-align: left;
+  margin-bottom: 0.4rem;
+}
+.regex-table th,
+.regex-table td {
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--color-light-grey);
+}
+.regex-table th {
+  color: var(--color-mid-grey);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+.regex-table code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-blue);
+  background: var(--color-blue-pale);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+
+/* ============================================================
+   SECTION 9 — SETTINGS
+   Targets: <section id="settings">
+   Contains: currency, budget cap, categories, data management
+   ============================================================ */
+
+/* Each settings card is a <fieldset> */
+.settings-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+.settings-card legend {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-black);
+  padding: 0 0.4rem;
+  margin-bottom: var(--space-md);
+}
+.settings-desc {
+  font-size: 0.82rem;
+  color: var(--color-dark-grey);
+  margin-bottom: var(--space-md);
+  margin-top: -0.3rem;
+}
+
+/* 2-column grid for the two rate inputs */
+.currency-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+/* Currency converter box */
+.converter-box {
+  background: var(--color-off-white);
+  border-radius: var(--r-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  border: 1px solid var(--color-light-grey);
+}
+.converter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.conv-input  { flex: 1; min-width: 80px; }
+.conv-select { width: 90px; flex-shrink: 0; }
+.conv-arrow  { color: var(--color-blue); font-size: 1.1rem; padding: 0 0.2rem; }
+.conv-result {
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--color-blue);
+  min-height: 1.4em;
+}
+
+/* Categories tag list */
+.categories-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: var(--space-md);
+}
+.cat-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  background: var(--color-off-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  color: var(--color-dark-grey);
+}
+.cat-tag-del {
+  background: none;
+  border: none;
+  color: var(--color-mid-grey);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 0.1rem;
+  transition: color var(--t-fast);
+}
+.cat-tag-del:hover {
+  color: var(--color-red);
+}
+
+/* New category input row */
+.add-category-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+.add-category-row .form-control {
+  flex: 1;
+}
+
+/* Data action buttons row */
+.data-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mt-2 {
+   margin-top: var(--space-md);
+   }
+
+
+/* ============================================================
+   SECTION 10 — BUTTONS
+   Targets: .btn, .btn-primary, .btn-ghost, .btn-danger, .btn-sm
+   Used across all sections
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.2rem;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:active {
+  opacity: 0.85;
+}
+
+/* Blue primary button */
+.btn-primary {
+  background: var(--color-blue);
+  color: var(--color-white);
+  border-color: var(--color-blue);
+}
+.btn-primary:hover {
+  background: var(--color-blue-light);
+  border-color: var(--color-blue-light);
+}
+
+/* Outlined ghost button */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-dark-grey);
+  border-color: var(--color-light-grey);
+}
+.btn-ghost:hover {
+  background: var(--color-off-white);
+  color: var(--color-black);
+  border-color: var(--color-mid-grey);
+}
+
+/* Red danger button */
+.btn-danger {
+  background: var(--color-red-pale);
+  color: var(--color-red);
+  border-color: var(--color-red-light);
+}
+.btn-danger:hover {
+  background: var(--color-red);
+  color: var(--color-white);
+}
+
+/* Small button variant */
+.btn-sm {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+}
+
+
+/* ============================================================
+   SECTION 11 — MODAL
+   Targets: <div id="confirm-modal" class="modal-overlay">
+   Delete confirmation dialog
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+}
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal-box {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--r-lg);
+  padding: var(--space-xl);
+  max-width: 400px;
+  width: 100%;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-black);
+}
+.modal-message {
+  font-size: 0.88rem;
+  color: var(--color-dark-grey);
+  margin-bottom: var(--space-lg);
+}
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+
+/* ============================================================
+   SECTION 12 — FOOTER
+   Targets: <footer role="contentinfo">
+   ============================================================ */
+footer {
+  border-top: 2px solid var(--color-blue);
+  padding: var(--space-md);
+  background: var(--color-black);
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+  text-align: center;
+}
+.footer-logo {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-white);
+}
+.footer-copy,
+.footer-stack {
+  font-size: 0.72rem;
+  color: var(--color-mid-grey);
+}
+
+
+/* ============================================================
+   SECTION 13 — RESPONSIVE: TABLET (768px and up)
+   ============================================================ */
+@media (min-width: 768px) {
+  /* Header: more padding */
+  .header-inner {
+    padding: 0.75rem var(--space-xl);
+  }
+
+  /* Hide hamburger, show nav inline */
+  .nav-toggle {
+    display: none;
+  }
+  #primary-nav {
+    display: block !important;
+    position: static;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  #primary-nav ul {
+    flex-direction: row;
+    gap: 0.1rem;
+  }
+
+  /* About: 2 columns */
+  .about-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Stats: 4 columns, primary card takes 2 */
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .stat-card.primary {
+    grid-column: span 2;
+  }
+
+  /* Search toolbar: horizontal */
+  .search-toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .search-field-wrap {
+    flex: 1 1 260px;
+  }
+
+  /* Hide mobile cards, show table */
+  .records-cards {
+    display: none !important;
+  }
+
+  /* Footer: horizontal */
+  .footer-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  /* More padding in section containers */
+  .section-container {
+    padding: var(--space-2xl) var(--space-xl);
+  }
+}
+
+/* ============================================================
+   SECTION 14 — RESPONSIVE: DESKTOP (1024px and up)
+   ============================================================ */
+@media (min-width: 1024px) {
+  /* About: 4 columns */
+  .about-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Stats: each card its own column */
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .stat-card.primary {
+    grid-column: span 1;
+  }
+  .stat-card.primary .stat-value {
+    font-size: 1.6rem;
+  }
+
+  /* Taller trend chart */
+  .trend-chart {
+    height: 130px;
+  }
+}
