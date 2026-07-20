@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinTrack — Validator Tests</title>
+  <style>
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #2d3748;
+      --pass: #22c55e; --fail: #ef4444; --warn: #f59e0b;
+      --accent: #e6f542; --text: #e8edf3; --muted: #8b9ab3;
+      --mono: 'Space Mono', monospace; --ui: 'Inter', sans-serif;
+    }
+    * {
+         box-sizing: border-box; margin:0; padding:0;
+    }
+    body {
+         background:var(--bg); color:var(--text); font-family:var(--ui); padding:2rem; line-height:1.5; 
+     }
+    h1 {
+         font-size:1.5rem; margin-bottom:.25rem;
+     }
+    .subtitle {
+         color:var(--muted); font-size:.85rem; margin-bottom:2rem;
+    }
+    .suite {
+         background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:1.5rem; overflow:hidden; 
+    }
+    .suite-header { 
+        padding:.75rem 1rem; border-bottom:1px solid var(--border); font-weight:700; font-size:.9rem;
+     }
+    .suite-header small { 
+        color:var(--muted); font-weight:400; margin-left:.5rem; font-family:var(--mono); font-size:.75rem; 
+    }
+    table {
+         width:100%; border-collapse:collapse; font-size:.8rem; 
+        }
+    th {
+         padding:.5rem 1rem; text-align:left; font-family:var(--mono); font-size:.65rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); background:rgba(255,255,255,.02); 
+        }
+    td { 
+        padding:.5rem 1rem; border-top:1px solid var(--border); vertical-align:top;
+     }
+    td code { 
+        font-family:var(--mono); font-size:.75rem; background:rgba(255,255,255,.06); padding:.1em .3em; border-radius:3px; color:var(--accent);
+     }
+    .pass { 
+        color:var(--pass); font-family:var(--mono); font-weight:700;
+     }
+    .fail {
+         color:var(--fail); font-family:var(--mono); font-weight:700; 
+        }
+    .warn-cell {
+         color:var(--warn); font-family:var(--mono); font-size:.75rem; 
+        }
+    .summary {
+         padding:1rem; display:flex; gap:2rem;
+         }
+    .s-num { 
+        font-family:var(--mono); font-size:1.2rem; font-weight:700;
+     }
+    .s-label {
+         font-size:.72rem; color:var(--muted);
+         }
+    .s-pass {
+         color:var(--pass); 
+        }
+    .s-fail { 
+        color:var(--fail); 
+    }
+    #overall {
+         padding:.75rem 1rem; font-family:var(--mono); font-weight:700; border-radius:6px; margin-bottom:1.5rem;
+         }
+    .overall-pass { 
+        background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.3); color:var(--pass); }
+    .overall-fail { background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); color:var(--fail);
+     }
+  </style>
+</head>
+<body>
+  <h1>FinTrack — Regex & Validator Tests</h1>
+  <p class="subtitle">M3: Forms &amp; Regex Validation ✓ — Unit assertions, no framework</p>
+  <div id="overall"></div>
+  <div id="results"></div>
+
+<script type="module">
+// ---- Inline validators (mirrors validators.js) ----
+
+const RX_DESCRIPTION   = /^\S(?:.*\S)?$|^\S$/;
+const RX_AMOUNT        = /^(0|[1-9]\d*)(\.\d{1,2})?$/;
+const RX_DATE          = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+const RX_CATEGORY      = /^[A-Za-z]+(?:[ -][A-Za-z]+)*$/;
+const RX_DUP_WORD      = /\b(\w+)\s+\1\b/i;
+const RX_AMOUNT_NONZERO = /^(?!0+(?:\.0+)?$)(0|[1-9]\d*)(\.\d{1,2})?$/;
+
+// Finance Tracker search patterns
+const RX_CENTS         = /\.\d{2}\b/;
+const RX_BEVERAGE      = /(coffee|tea)/i;
+// Lookahead: amount has decimal cents
+const RX_DECIMAL_LOOK  = /(?<=\$)\d+\.\d{2}/;
+
+function compileRegex(input, flags = 'i') {
+  try { return input ? new RegExp(input, flags) : null; } catch { return null; }
+}
+
+// ---- Test runner ----
+let totalPass = 0, totalFail = 0;
+
+function suite(name, description, tests) {
+  let pass = 0, fail = 0;
+  const rows = tests.map(([label, input, expected, extraInfo]) => {
+    const got = expected; // pre-evaluated in test definition
+    const ok  = got;
+    if (ok) { pass++; totalPass++; } else { fail++; totalFail++; }
+    return `<tr>
+      <td>${label}</td>
+      <td><code>${String(input).replace(/</g,'&lt;')}</code></td>
+      <td>${expected ? '<span class="pass">✓ PASS</span>' : '<span class="fail">✗ FAIL</span>'}</td>
+      <td>${extraInfo || ''}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+  <div class="suite">
+    <div class="suite-header">${name} <small>${description}</small></div>
+    <table>
+      <thead><tr><th>Test</th><th>Input</th><th>Result</th><th>Notes</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="summary">
+      <div><div class="s-num s-pass">${pass}</div><div class="s-label">Passed</div></div>
+      <div><div class="s-num s-fail">${fail}</div><div class="s-label">Failed</div></div>
+    </div>
+  </div>`;
+}
+
+const results = [];
+
+// ---- Suite 1: Description ----
+results.push(suite('Description Validation', 'Rule 1: no leading/trailing spaces', [
+  ['Valid: normal text',         'Lunch at cafeteria',  RX_DESCRIPTION.test('Lunch at cafeteria'), 'Should pass'],
+  ['Valid: single word',         'Coffee',              RX_DESCRIPTION.test('Coffee'), ''],
+  ['Invalid: leading space',     ' Coffee',             !RX_DESCRIPTION.test(' Coffee'), 'Should fail'],
+  ['Invalid: trailing space',    'Coffee ',             !RX_DESCRIPTION.test('Coffee '), 'Should fail'],
+  ['Invalid: both spaces',       ' Coffee ',            !RX_DESCRIPTION.test(' Coffee '), 'Should fail'],
+  ['Valid: space in middle',     'Bus pass fare',       RX_DESCRIPTION.test('Bus pass fare'), 'Internal spaces OK'],
+  ['Valid: single char',         'A',                   RX_DESCRIPTION.test('A'), ''],
+]));
+
+// ---- Suite 2: Amount ----
+results.push(suite('Amount Validation', 'Rule 2: decimal up to 2dp, Rule 6 lookahead > 0', [
+  ['Valid: integer',             '12',        RX_AMOUNT.test('12'), ''],
+  ['Valid: two decimals',        '12.50',     RX_AMOUNT.test('12.50'), ''],
+  ['Valid: one decimal',         '5.5',       RX_AMOUNT.test('5.5'), ''],
+  ['Valid: zero point',          '0.99',      RX_AMOUNT.test('0.99'), '0.99 valid'],
+  ['Invalid: leading zero',      '012',       !RX_AMOUNT.test('012'), 'Leading zeros fail'],
+  ['Invalid: three decimals',    '12.500',    !RX_AMOUNT.test('12.500'), '3dp fails'],
+  ['Invalid: text',              'abc',       !RX_AMOUNT.test('abc'), ''],
+  ['Invalid: negative',          '-5',        !RX_AMOUNT.test('-5'), ''],
+  ['ADVANCED — lookahead nonzero: "0.00"', '0.00', !RX_AMOUNT_NONZERO.test('0.00'), 'Must be > 0'],
+  ['ADVANCED — lookahead nonzero: "0.01"', '0.01', RX_AMOUNT_NONZERO.test('0.01'), 'Penny is valid'],
+  ['ADVANCED — lookahead nonzero: "0"',    '0',    !RX_AMOUNT_NONZERO.test('0'), 'Zero fails'],
+]));
+
+// ---- Suite 3: Date ----
+results.push(suite('Date Validation', 'Rule 3: strict YYYY-MM-DD', [
+  ['Valid date',                 '2025-09-29', RX_DATE.test('2025-09-29'), ''],
+  ['Valid: year boundary',       '2000-01-01', RX_DATE.test('2000-01-01'), ''],
+  ['Invalid: month 13',          '2025-13-01', !RX_DATE.test('2025-13-01'), ''],
+  ['Invalid: day 00',            '2025-09-00', !RX_DATE.test('2025-09-00'), ''],
+  ['Invalid: day 32',            '2025-09-32', !RX_DATE.test('2025-09-32'), ''],
+  ['Invalid: wrong separator',   '2025/09/29', !RX_DATE.test('2025/09/29'), ''],
+  ['Invalid: short year',        '25-09-29',   !RX_DATE.test('25-09-29'), ''],
+  ['Invalid: extra chars',       '2025-09-29X',!RX_DATE.test('2025-09-29X'), ''],
+]));
+
+// ---- Suite 4: Category ----
+results.push(suite('Category Validation', 'Rule 4: letters, spaces, hyphens only', [
+  ['Valid: single word',         'Food',        RX_CATEGORY.test('Food'), ''],
+  ['Valid: hyphen',              'Part-time',   RX_CATEGORY.test('Part-time'), ''],
+  ['Valid: two words',           'Bus Pass',    RX_CATEGORY.test('Bus Pass'), ''],
+  ['Invalid: number',            'Food2',       !RX_CATEGORY.test('Food2'), ''],
+  ['Invalid: leading hyphen',    '-Food',       !RX_CATEGORY.test('-Food'), ''],
+  ['Invalid: trailing hyphen',   'Food-',       !RX_CATEGORY.test('Food-'), ''],
+  ['Invalid: underscore',        'my_cat',      !RX_CATEGORY.test('my_cat'), ''],
+  ['Invalid: empty',             '',            !RX_CATEGORY.test(''), ''],
+]));
+
+// ---- Suite 5: Advanced — Duplicate Word (back-reference) ----
+results.push(suite('Duplicate Word Detection', 'Rule 5 (ADVANCED): back-reference \\b(\\w+)\\s+\\1\\b', [
+  ['Dup: "the the"',             'the the',     RX_DUP_WORD.test('the the'), 'Catches duplicate'],
+  ['Dup: "at at"',               'went at at',  RX_DUP_WORD.test('went at at'), ''],
+  ['Dup: case insensitive',      'The the',     RX_DUP_WORD.test('The the'), '/i flag'],
+  ['No dup: normal text',        'the bus stop',!RX_DUP_WORD.test('the bus stop'), 'Should not match'],
+  ['No dup: similar words',      'cat catch',   !RX_DUP_WORD.test('cat catch'), 'Not duplicates'],
+  ['Dup: mid-sentence',          'I paid paid twice',RX_DUP_WORD.test('I paid paid twice'), 'Mid-sentence dup'],
+]));
+
+// ---- Suite 6: Finance Tracker Search Patterns ----
+results.push(suite('Finance Search Patterns', 'Theme-specific regex patterns', [
+  ['Cents present: "12.50"',     '12.50',       RX_CENTS.test('12.50'), '/\\.\\d{2}\\b/'],
+  ['Cents: "$0.99"',             '$0.99',        RX_CENTS.test('$0.99'), ''],
+  ['No cents: "12"',             '12',           !RX_CENTS.test('12'), 'Integers fail'],
+  ['Beverage: "coffee"',         'coffee with friends', RX_BEVERAGE.test('coffee with friends'), '/(coffee|tea)/i'],
+  ['Beverage: "TEA"',            'TEA time',    RX_BEVERAGE.test('TEA time'), 'Case-insensitive'],
+  ['Beverage: "juice" (no match)','orange juice',!RX_BEVERAGE.test('orange juice'), 'Juice not in pattern'],
+  ['ADVANCED lookahead: "$12.50"','$12.50',     !!('$12.50'.match(RX_DECIMAL_LOOK)), '(?<=\\$)\\d+\\.\\d{2}'],
+  ['ADVANCED lookahead: no $',   '12.50',       !('12.50'.match(RX_DECIMAL_LOOK)), 'No $ prefix fails'],
+]));
+
+// ---- Safe regex compiler ----
+results.push(suite('Safe Regex Compiler', 'compileRegex() with try/catch', [
+  ['Valid: simple',              '(coffee|tea)',  compileRegex('(coffee|tea)') !== null, 'Returns RegExp'],
+  ['Valid: lookahead',           '(?=\\d)',       compileRegex('(?=\\d)') !== null, ''],
+  ['Invalid: unbalanced paren',  '((',           compileRegex('((') === null, 'Returns null on error'],
+  ['Empty string → null',        '',             compileRegex('') === null, ''],
+  ['Valid: back-ref',            '(\\w+)\\s+\\1',compileRegex('(\\w+)\\s+\\1') !== null, ''],
+]));
+
+// ---- Render ----
+document.getElementById('results').innerHTML = results.join('');
+const overall = document.getElementById('overall');
+overall.textContent = `Test run complete — ${totalPass} passed, ${totalFail} failed out of ${totalPass + totalFail} assertions`;
+overall.className   = totalFail === 0 ? 'overall-pass' : 'overall-fail';
+</script>
+</body>
+</html>
