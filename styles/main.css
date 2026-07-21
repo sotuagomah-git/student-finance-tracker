@@ -267,7 +267,7 @@ main {
 /* All page sections are hidden by default */
 /* JS adds .active to show the current one */
 .page-section {
-  display: block;
+  display: none;
 }
 .page-section.active {
   display: block;
